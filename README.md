@@ -21,6 +21,26 @@ Running it produces:
 {'name': 'Santosh', 'message': 'Hey Santosh, how is your day going? You are doing amazing Santosh'}
 ```
 
+## Multiple inputs
+
+[multiple_inputs.py](multiple_inputs.py) shows a single node that reads several fields off the state at once — a list of `values`, a `name`, and an `operation`:
+
+```
+processor
+```
+
+The `processor` node sums (`+`) or multiplies (`*`) the list and writes a personalized `result`:
+
+```
+{'values': [12, 21, 33], 'name': 'Santosh', 'operation': '*', 'result': 'Hi there Santosh! Your answer is: 8316'}
+```
+
+Run it with:
+
+```bash
+uv run python multiple_inputs.py
+```
+
 ## Requirements
 
 - Python >= 3.14
