@@ -63,3 +63,31 @@ first_node → second_node → third_node
 uv run python sequential_agent.py
 # {'name': 'Charlie', 'age': 20, 'skills': ['Python', 'TDD'], 'final': 'Hi Charlie. You are 20 years old! You are skilled in Python, TDD.'}
 ```
+
+### conditional_agent.py
+
+Two rounds of branching, where the path taken depends on the state rather than being fixed in advance:
+
+```mermaid
+flowchart LR
+    START([START]) --> router1
+    router1 -->|"+"| add_node1
+    router1 -->|"-"| subtract_node1
+    add_node1 --> router2
+    subtract_node1 --> router2
+    router2 -->|"+"| add_node2
+    router2 -->|"-"| subtract_node2
+    add_node2 --> FINISH([END])
+    subtract_node2 --> FINISH
+```
+
+`router1` and `router2` are pass-through nodes that do no work; the choice happens in the functions passed to `add_conditional_edges`. Each returns a branch key — `"addition_operation"` or `"subtraction_operation"` — which the mapping dict translates into the next node. `decide_first_operation` reads `operation1` to pick the first pair, `decide_second_operation` reads `operation2` to pick the second. Both are typed with `Literal[...]` so a mistyped branch key is caught by the type checker instead of at runtime.
+
+The two operations are independent, so mixed operators take different branches in each half:
+
+```bash
+uv run python conditional_agent.py
+# {'number1': 10, 'operation1': '-', 'number2': 5, 'finalNumber1': 5, 'number3': 20, 'operation2': '-', 'number4': 10, 'finalNumber2': 10}
+# {'number1': 10, 'operation1': '+', 'number2': 5, 'finalNumber1': 15, 'number3': 20, 'operation2': '+', 'number4': 10, 'finalNumber2': 30}
+# {'number1': 10, 'operation1': '+', 'number2': 5, 'finalNumber1': 15, 'number3': 20, 'operation2': '-', 'number4': 10, 'finalNumber2': 10}
+```
