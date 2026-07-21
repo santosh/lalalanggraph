@@ -91,3 +91,30 @@ uv run python conditional_agent.py
 # {'number1': 10, 'operation1': '+', 'number2': 5, 'finalNumber1': 15, 'number3': 20, 'operation2': '+', 'number4': 10, 'finalNumber2': 30}
 # {'number1': 10, 'operation1': '+', 'number2': 5, 'finalNumber1': 15, 'number3': 20, 'operation2': '-', 'number4': 10, 'finalNumber2': 10}
 ```
+
+### looping_agent.py
+
+A node that routes back to itself, collecting five random numbers before it lets the graph finish:
+
+```mermaid
+flowchart LR
+    START([START]) --> greeting
+    greeting --> random
+    random -->|"counter < 5"| random
+    random -->|"counter == 5"| FINISH([END])
+```
+
+`should_continue` is the loop condition. Because the branch key `"loop"` maps back to `random` itself, the same node runs repeatedly until `counter` reaches 5 — iteration expressed as a cycle in the graph rather than as a Python `for`.
+
+Note that `random_node` rebuilds the list (`state["number"] + [n]`) instead of calling `.append`. LangGraph shallow-copies state between steps, so the list object is shared with the caller; appending in place would reach back out of the graph and mutate the dict you passed to `invoke`.
+
+Output varies per run since the numbers are random:
+
+```bash
+uv run python looping_agent.py
+# Entering loop 1
+# Entering loop 2
+# Entering loop 3
+# Entering loop 4
+# {'name': 'Santosh', 'message': 'Hi there, Santosh!', 'number': [2, 10, 9, 2, 9], 'counter': 5}
+```
