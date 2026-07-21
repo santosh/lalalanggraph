@@ -17,9 +17,9 @@ uv sync
 
 ## Examples
 
-Each script is a self-contained graph you can run with `uv run python <file>`.
+Each script in `graphs/` is a self-contained graph you can run with `uv run python graphs/<file>`.
 
-### hello_world.py
+### hello_world_graph.py
 
 A two-node graph that greets and compliments a person:
 
@@ -30,11 +30,11 @@ greeter → compliment
 State flows through an `AgentState` dict carrying a `name` and a `message`. `greeter` builds the greeting from `name`, and `compliment` appends a compliment from the same `name`.
 
 ```bash
-uv run python hello_world.py
+uv run python graphs/hello_world_graph.py
 # {'name': 'Santosh', 'message': 'Hey Santosh, how is your day going? You are doing amazing Santosh'}
 ```
 
-### multiple_inputs.py
+### multiple_inputs_graph.py
 
 A single node that reads several fields off the state at once — a list of `values`, a `name`, and an `operation`:
 
@@ -45,11 +45,11 @@ processor
 The `processor` node sums (`+`) or multiplies (`*`) the list and writes a personalized `result`.
 
 ```bash
-uv run python multiple_inputs.py
+uv run python graphs/multiple_inputs_graph.py
 # {'values': [12, 21, 33], 'name': 'Santosh', 'operation': '*', 'result': 'Hi there Santosh! Your answer is: 8316'}
 ```
 
-### sequential_agent.py
+### sequential_graph.py
 
 Three nodes chained one after another, each appending to the same `final` string:
 
@@ -60,11 +60,11 @@ first_node → second_node → third_node
 `first_node` greets by `name`, `second_node` adds the `age`, and `third_node` lists the `skills`. Nothing branches — it is the plain sequential case, where each node only extends what the previous one wrote.
 
 ```bash
-uv run python sequential_agent.py
+uv run python graphs/sequential_graph.py
 # {'name': 'Charlie', 'age': 20, 'skills': ['Python', 'TDD'], 'final': 'Hi Charlie. You are 20 years old! You are skilled in Python, TDD.'}
 ```
 
-### conditional_agent.py
+### conditional_graph.py
 
 Two rounds of branching, where the path taken depends on the state rather than being fixed in advance:
 
@@ -86,13 +86,13 @@ flowchart LR
 The two operations are independent, so mixed operators take different branches in each half:
 
 ```bash
-uv run python conditional_agent.py
+uv run python graphs/conditional_graph.py
 # {'number1': 10, 'operation1': '-', 'number2': 5, 'finalNumber1': 5, 'number3': 20, 'operation2': '-', 'number4': 10, 'finalNumber2': 10}
 # {'number1': 10, 'operation1': '+', 'number2': 5, 'finalNumber1': 15, 'number3': 20, 'operation2': '+', 'number4': 10, 'finalNumber2': 30}
 # {'number1': 10, 'operation1': '+', 'number2': 5, 'finalNumber1': 15, 'number3': 20, 'operation2': '-', 'number4': 10, 'finalNumber2': 10}
 ```
 
-### looping_agent.py
+### looping_graph.py
 
 A node that routes back to itself, collecting five random numbers before it lets the graph finish:
 
@@ -111,7 +111,7 @@ Note that `random_node` rebuilds the list (`state["number"] + [n]`) instead of c
 Output varies per run since the numbers are random:
 
 ```bash
-uv run python looping_agent.py
+uv run python graphs/looping_graph.py
 # Entering loop 1
 # Entering loop 2
 # Entering loop 3
