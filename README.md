@@ -48,3 +48,18 @@ The `processor` node sums (`+`) or multiplies (`*`) the list and writes a person
 uv run python multiple_inputs.py
 # {'values': [12, 21, 33], 'name': 'Santosh', 'operation': '*', 'result': 'Hi there Santosh! Your answer is: 8316'}
 ```
+
+### sequential_agent.py
+
+Three nodes chained one after another, each appending to the same `final` string:
+
+```
+first_node → second_node → third_node
+```
+
+`first_node` greets by `name`, `second_node` adds the `age`, and `third_node` lists the `skills`. Nothing branches — it is the plain sequential case, where each node only extends what the previous one wrote.
+
+```bash
+uv run python sequential_agent.py
+# {'name': 'Charlie', 'age': 20, 'skills': ['Python', 'TDD'], 'final': 'Hi Charlie. You are 20 years old! You are skilled in Python, TDD.'}
+```
