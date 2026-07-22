@@ -31,7 +31,29 @@ graph.add_edge(START, "process")
 graph.add_edge("process", END)
 agent = graph.compile()
 
-conversation_history = []
+def load_conversation() -> List[Union[HumanMessage, AIMessage]]:
+    """Rebuild conversation history from logging.txt, if a log exists."""
+
+    history = []
+
+    try:
+        with open("logging.txt", "r") as txt_file:
+            for line in txt_file:
+                line = line.rstrip("\n")
+                if line.startswith("You: "):
+                    history.append(HumanMessage(content=line[len("You: "):]))
+                elif line.startswith("AI: "):
+                    history.append(AIMessage(content=line[len("AI: "):]))
+    except FileNotFoundError:
+        pass
+
+    return history
+
+
+conversation_history = load_conversation()
+
+if conversation_history:
+    print(f"Loaded {len(conversation_history)} messages from logging.txt")
 
 user_input = input("Enter: ")
 while user_input != "exit":
