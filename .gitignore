@@ -11,3 +11,6 @@ wheels/
 
 
 *.env
+
+# Generated conversation logs
+logging.txt
