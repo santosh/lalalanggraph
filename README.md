@@ -137,3 +137,42 @@ uv run python graphs/looping_graph.py
 # Entering loop 4
 # {'name': 'Santosh', 'message': 'Hi there, Santosh!', 'number': [2, 10, 9, 2, 9], 'counter': 5}
 ```
+
+### react_agent.py
+
+A ReAct-style agent: one node calls the model, a conditional edge checks whether the reply asked for a tool, and if so routes to a `ToolNode` before looping back — the loop continues until the model answers without a tool call.
+
+```mermaid
+flowchart LR
+    START([START]) --> our_agent
+    our_agent -->|"continue"| tools
+    tools --> our_agent
+    our_agent -->|"end"| FINISH([END])
+```
+
+`our_agent` invokes `ChatOpenAI` bound to three tools (`add`, `subtract`, `multiply`) against the running message history. `should_continue` inspects the last message's `tool_calls`: present, and `tools` runs the requested function and appends a `ToolMessage`; absent, and the graph finishes. Unlike the `graphs/` examples, the LLM itself decides how many loops to take and which tools to call.
+
+```bash
+uv run python react_agent.py
+# ================================ Human Message =================================
+# Add 40 + 12 and then multiply the results by 6.And also tell me a joke please?
+# ================================== Ai Message ==================================
+# Tool Calls:
+#   add
+#   Args: a: 40, b: 12
+# ================================= Tool Message =================================
+# Name: add
+# 52
+# ================================== Ai Message ==================================
+# Tool Calls:
+#   multiply
+#   Args: a: 52, b: 6
+# ================================= Tool Message =================================
+# Name: multiply
+# 312
+# ================================== Ai Message ==================================
+# The result of adding 40 and 12, and then multiplying by 6, is 312.
+# And here's a joke for you:
+# Why don't scientists trust atoms?
+# Because they make up everything!
+```
